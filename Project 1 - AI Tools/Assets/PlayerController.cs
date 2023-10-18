@@ -21,17 +21,17 @@ public class PlayerController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         // Determine movement speed (walk or run) based on player input
-        float moveSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        float moveSpeed = GetMoveSpeed();
 
         // Determine if the player is walking left, right, backward, or forward
-        bool isWalkingLeft = (horizontalInput < 0f && !Input.GetKey(KeyCode.LeftShift));
-        bool isWalkingRight = (horizontalInput > 0f && !Input.GetKey(KeyCode.LeftShift));
-        bool isWalkingBack = (verticalInput < 0f && !Input.GetKey(KeyCode.LeftShift));
-        bool isRunningBack = (verticalInput < 0f && Input.GetKey(KeyCode.LeftShift));
+        bool isWalkingLeft = (horizontalInput < 0f && !IsRunning());
+        bool isWalkingRight = (horizontalInput > 0f && !IsRunning());
+        bool isWalkingBack = (verticalInput < 0f && !IsRunning());
+        bool isRunningBack = (verticalInput < 0f && IsRunning());
 
         // Set animator parameters based on player movement
         animator.SetBool("IsWalking", (horizontalInput != 0f || verticalInput != 0f) && !isWalkingBack && !isRunningBack && !isWalkingLeft && !isWalkingRight);
-        animator.SetBool("IsRunning", (Input.GetKey(KeyCode.LeftShift) && (horizontalInput != 0f || verticalInput != 0f)) && !isWalkingBack && !isRunningBack && !isWalkingLeft && !isWalkingRight);
+        animator.SetBool("IsRunning", IsRunning() && (horizontalInput != 0f || verticalInput != 0f) && !isWalkingBack && !isRunningBack && !isWalkingLeft && !isWalkingRight);
         animator.SetBool("IsWalkingLeft", isWalkingLeft);
         animator.SetBool("IsWalkingRight", isWalkingRight);
         animator.SetBool("IsWalkingBack", isWalkingBack);
@@ -54,6 +54,21 @@ public class PlayerController : MonoBehaviour
             animator.ResetTrigger("AttackTrigger");
         }
     }
+
+    float GetMoveSpeed()
+    {
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey("joystick button 4"))  // "joystick button 4" corresponds to the LB button on most controllers
+        {
+            return runSpeed;
+        }
+        return walkSpeed;
+    }
+
+    bool IsRunning()
+    {
+        return Input.GetKey(KeyCode.LeftShift) || Input.GetKey("joystick button 4");
+    }
+
 
     // Called by Animation Event at the moment of the attack animation
     void DealDamage()
