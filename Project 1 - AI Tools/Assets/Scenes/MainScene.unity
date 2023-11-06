@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 195730663}
   - component: {fileID: 195730662}
   - component: {fileID: 195730661}
+  - component: {fileID: 195730666}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -156,6 +157,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  movementSpeed: 3
+  attackRange: 2
+  attackCooldown: 2
 --- !u!65 &195730662
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -236,12 +240,33 @@ Transform:
   m_GameObject: {fileID: 195730660}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0472458, y: 1, z: 2.87}
+  m_LocalPosition: {x: 0.0472458, y: 1, z: 39.12}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &195730666
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195730660}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
