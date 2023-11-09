@@ -77,10 +77,12 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 2f))
         {
+            
             // Check if the hit object has an Enemy component
             Enemy enemy = hit.transform.GetComponent<Enemy>();
             if (enemy != null)
             {
+                Debug.Log("llll");
                 // Deal damage to the enemy
                 enemy.TakeDamage(attackDamage);
             }
