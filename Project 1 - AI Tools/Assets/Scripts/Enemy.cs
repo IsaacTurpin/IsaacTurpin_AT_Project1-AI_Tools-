@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public Animator animator; // Reference to the Animator component
     public int maxHealth = 500;
     private int currentHealth;
     public float movementSpeed = 3f;
@@ -33,9 +34,16 @@ public class Enemy : MonoBehaviour
 
                 // Make the enemy face the player
                 transform.LookAt(player);
+
+                // Set the IsMoving parameter in the Animator Controller to control walking animation
+                animator.SetBool("IsMoving", true);
+                animator.SetBool("IsAttacking", false);
             }
             else
             {
+                // Stop moving if in attack range
+                animator.SetBool("IsMoving", false);
+
                 // Attack the player if in attack range
                 if (Time.time >= nextAttackTime)
                 {
@@ -46,13 +54,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     void AttackPlayer()
     {
         // Perform boss's attack logic here
         // For example, dealing damage to the player or triggering attack animations
 
-        // For demonstration, let's assume the boss deals 50 damage to the player
+        // Set the IsAttacking parameter in the Animator Controller to trigger attack animation
+        animator.SetBool("IsAttacking", true);
+    }
+
+    // Animation Event method for dealing damage
+    void DealDamage()
+    {
+        // Deal damage to the player
         int damage = 50;
         PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
         if (playerHealth != null)
@@ -79,6 +93,8 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+
 
 
 

@@ -82,7 +82,6 @@ public class PlayerController : MonoBehaviour
             Enemy enemy = hit.transform.GetComponent<Enemy>();
             if (enemy != null)
             {
-                Debug.Log("llll");
                 // Deal damage to the enemy
                 enemy.TakeDamage(attackDamage);
             }
