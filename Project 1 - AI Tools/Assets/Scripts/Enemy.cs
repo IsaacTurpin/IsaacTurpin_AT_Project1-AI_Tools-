@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -13,11 +14,37 @@ public class Enemy : MonoBehaviour
     private float nextAttackTime = 0f;
 
     private Transform player;
+   // public Canvas canvas; // Reference to the canvas
+
+    // Assign your health bar prefab in the Unity Editor
+    public GameObject healthBarPrefab;
+    private GameObject healthBarInstance;
+    private HealthBar healthBar; // Assuming you named the script as HealthBar
+
+
+
+
 
     void Start()
     {
         currentHealth = maxHealth;
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        healthBar = healthBarPrefab.GetComponent<HealthBar>();
+
+        /* if (healthBarPrefab != null)
+         {
+             // Instantiate Health Bar
+             healthBarInstance = Instantiate(healthBarPrefab, Vector3.zero, Quaternion.identity);
+             healthBarInstance.transform.SetParent(canvas.transform, false);
+
+             // Assuming the HealthBar script is attached to the healthBarPrefab
+             healthBar = healthBarInstance.GetComponent<HealthBar>();
+         }
+         else
+         {
+             Debug.LogError("Health bar prefab is not assigned in the Unity Editor.");
+         } */
     }
 
     void Update()
@@ -51,7 +78,16 @@ public class Enemy : MonoBehaviour
                     nextAttackTime = Time.time + attackCooldown;
                 }
             }
+
+            // Update Health Bar Position
+           // Vector3 healthBarPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+           // healthBarInstance.transform.position = healthBarPos;
         }
+       // else
+       // {
+            // If the player is null, destroy the health bar
+        //    Destroy(healthBarInstance);
+       // }
     }
 
     void AttackPlayer()
@@ -81,6 +117,8 @@ public class Enemy : MonoBehaviour
 
         // Add logic for handling damage effects, animations, or boss rage behavior here
 
+        UpdateHealthBar();
+
         if (currentHealth <= 0)
         {
             Die();
@@ -92,6 +130,14 @@ public class Enemy : MonoBehaviour
         // Add logic for boss death behavior (e.g., play death animation, drop items, etc.)
         Destroy(gameObject);
     }
+
+    void UpdateHealthBar()
+    {
+        float fillAmount = (float)currentHealth / maxHealth;
+        healthBar.SetHealth(fillAmount);
+    }
+
+
 }
 
 
