@@ -14,37 +14,17 @@ public class Enemy : MonoBehaviour
     private float nextAttackTime = 0f;
 
     private Transform player;
-   // public Canvas canvas; // Reference to the canvas
-
-    // Assign your health bar prefab in the Unity Editor
-    public GameObject healthBarPrefab;
-    private GameObject healthBarInstance;
-    private HealthBar healthBar; // Assuming you named the script as HealthBar
-
-
-
-
+    public Slider healthBarSlider; // Reference to the health bar slider
 
     void Start()
     {
         currentHealth = maxHealth;
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
-        healthBar = healthBarPrefab.GetComponent<HealthBar>();
-
-        /* if (healthBarPrefab != null)
-         {
-             // Instantiate Health Bar
-             healthBarInstance = Instantiate(healthBarPrefab, Vector3.zero, Quaternion.identity);
-             healthBarInstance.transform.SetParent(canvas.transform, false);
-
-             // Assuming the HealthBar script is attached to the healthBarPrefab
-             healthBar = healthBarInstance.GetComponent<HealthBar>();
-         }
-         else
-         {
-             Debug.LogError("Health bar prefab is not assigned in the Unity Editor.");
-         } */
+        if (healthBarSlider == null)
+        {
+            Debug.LogError("Health bar slider is not assigned in the inspector.");
+        }
     }
 
     void Update()
@@ -80,14 +60,8 @@ public class Enemy : MonoBehaviour
             }
 
             // Update Health Bar Position
-           // Vector3 healthBarPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
-           // healthBarInstance.transform.position = healthBarPos;
+            //healthBarSlider.transform.position = transform.position + Vector3.up * 3.5f;
         }
-       // else
-       // {
-            // If the player is null, destroy the health bar
-        //    Destroy(healthBarInstance);
-       // }
     }
 
     void AttackPlayer()
@@ -134,7 +108,7 @@ public class Enemy : MonoBehaviour
     void UpdateHealthBar()
     {
         float fillAmount = (float)currentHealth / maxHealth;
-        healthBar.SetHealth(fillAmount);
+        healthBarSlider.value = fillAmount;
     }
 
 
