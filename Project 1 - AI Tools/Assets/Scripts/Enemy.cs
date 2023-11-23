@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public Animator animator; // Reference to the Animator component
+    public Animator animator;
     public int maxHealth = 500;
     private int currentHealth;
     public float movementSpeed = 3f;
@@ -14,7 +14,16 @@ public class Enemy : MonoBehaviour
     private float nextAttackTime = 0f;
 
     private Transform player;
-    public Slider healthBarSlider; // Reference to the health bar slider
+    public Slider healthBarSlider;
+
+    public enum AttackPhase
+    {
+        Phase1,
+        Phase2,
+        Phase3
+    }
+
+    public AttackPhase currentPhase = AttackPhase.Phase1;
 
     void Start()
     {
@@ -31,73 +40,114 @@ public class Enemy : MonoBehaviour
     {
         if (player != null)
         {
-            // Boss follows the player
             Vector3 directionToPlayer = player.position - transform.position;
 
             if (directionToPlayer.magnitude > attackRange)
             {
-                // Move towards the player if not in attack range
-                transform.Translate(directionToPlayer.normalized * movementSpeed * Time.deltaTime, Space.World);
-
-                // Make the enemy face the player
-                transform.LookAt(player);
-
-                // Set the IsMoving parameter in the Animator Controller to control walking animation
-                animator.SetBool("IsMoving", true);
-                animator.SetBool("IsAttacking", false);
+                MoveTowardsPlayer(directionToPlayer);
             }
             else
             {
-                // Stop moving if in attack range
-                animator.SetBool("IsMoving", false);
+                StopMoving();
 
-                // Attack the player if in attack range
                 if (Time.time >= nextAttackTime)
                 {
-                    AttackPlayer();
+                    // Check health thresholds to determine the current phase
+                    if (currentHealth > maxHealth * 0.66f)
+                    {
+                        currentPhase = AttackPhase.Phase1;
+                    }
+                    else if (currentHealth > maxHealth * 0.33f)
+                    {
+                        currentPhase = AttackPhase.Phase2;
+                    }
+                    else
+                    {
+                        currentPhase = AttackPhase.Phase3;
+                    }
+
+                    // Choose the appropriate attack based on the current phase
+                    switch (currentPhase)
+                    {
+                        case AttackPhase.Phase1:
+                            AttackPlayerPhase1();
+                            break;
+
+                        case AttackPhase.Phase2:
+                            AttackPlayerPhase2();
+                            break;
+
+                        case AttackPhase.Phase3:
+                            AttackPlayerPhase3();
+                            break;
+                    }
+
                     nextAttackTime = Time.time + attackCooldown;
                 }
             }
         }
     }
 
-    void AttackPlayer()
+
+    void MoveTowardsPlayer(Vector3 directionToPlayer)
     {
-        // Check if there's an obstacle between the enemy and the player using a raycast
-        RaycastHit hit;
-        Vector3 directionToPlayer = player.position - transform.position;
-
-        if (Physics.Raycast(transform.position, directionToPlayer, out hit, attackRange))
-        {
-            // Check if the obstacle is the player
-            if (hit.collider.CompareTag("Player"))
-            {
-                // Perform boss's attack logic here
-                // For example, dealing damage to the player or triggering attack animations
-
-                // Set the IsAttacking parameter in the Animator Controller to trigger attack animation
-                animator.SetBool("IsAttacking", true);
-
-                // Animation Event will handle dealing damage
-            }
-            else
-            {
-                // Player is not in the line of sight, so do not attack
-                animator.SetBool("IsAttacking", false);
-            }
-        }
-
-        // Alternatively, you can modify the conditions as needed based on your game's requirements
+        transform.Translate(directionToPlayer.normalized * movementSpeed * Time.deltaTime, Space.World);
+        transform.LookAt(player);
+        animator.SetBool("IsMoving", true);
+        animator.SetBool("IsAttacking", false);
     }
 
+    void StopMoving()
+    {
+        animator.SetBool("IsMoving", false);
+    }
 
-    // Animation Event method for dealing damage
+    void AttackPlayerPhase1()
+    {
+        if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
+        {
+            Debug.Log("phase 1");
+            // Attack logic for phase 1
+            animator.SetBool("IsAttacking", true);
+        }
+        else
+        {
+            animator.SetBool("IsAttacking", false);
+        }
+    }
+
+    void AttackPlayerPhase2()
+    {
+        if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
+        {
+            Debug.Log("phase 2");
+            // Attack logic for phase 2
+            animator.SetBool("IsAttacking", true);
+        }
+        else
+        {
+            animator.SetBool("IsAttacking", false);
+        }
+    }
+
+    void AttackPlayerPhase3()
+    {
+        if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
+        {
+            Debug.Log("phase 3");
+            // Attack logic for phase 3
+            animator.SetBool("IsAttacking", true);
+        }
+        else
+        {
+            animator.SetBool("IsAttacking", false);
+        }
+    }
+
     void DealDamage()
     {
-        // Check if the player is still in attack range
         if (IsPlayerInRange())
         {
-            // Deal damage to the player
             int damage = 50;
             PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
             if (playerHealth != null)
@@ -113,12 +163,18 @@ public class Enemy : MonoBehaviour
         return directionToPlayer.magnitude <= attackRange;
     }
 
+    bool IsObstacleBetweenPlayer()
+    {
+        RaycastHit hit;
+        Vector3 directionToPlayer = player.position - transform.position;
+
+        return Physics.Raycast(transform.position, directionToPlayer, out hit, attackRange) &&
+               !hit.collider.CompareTag("Player");
+    }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-
-        // Add logic for handling damage effects, animations, or boss rage behavior here
 
         UpdateHealthBar();
 
@@ -139,9 +195,9 @@ public class Enemy : MonoBehaviour
         float fillAmount = (float)currentHealth / maxHealth;
         healthBarSlider.value = fillAmount;
     }
-
-
 }
+
+
 
 
 
