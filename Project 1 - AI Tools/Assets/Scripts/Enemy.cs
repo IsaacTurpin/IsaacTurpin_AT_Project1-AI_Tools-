@@ -58,32 +58,61 @@ public class Enemy : MonoBehaviour
                     nextAttackTime = Time.time + attackCooldown;
                 }
             }
-
-            // Update Health Bar Position
-            //healthBarSlider.transform.position = transform.position + Vector3.up * 3.5f;
         }
     }
 
     void AttackPlayer()
     {
-        // Perform boss's attack logic here
-        // For example, dealing damage to the player or triggering attack animations
+        // Check if there's an obstacle between the enemy and the player using a raycast
+        RaycastHit hit;
+        Vector3 directionToPlayer = player.position - transform.position;
 
-        // Set the IsAttacking parameter in the Animator Controller to trigger attack animation
-        animator.SetBool("IsAttacking", true);
+        if (Physics.Raycast(transform.position, directionToPlayer, out hit, attackRange))
+        {
+            // Check if the obstacle is the player
+            if (hit.collider.CompareTag("Player"))
+            {
+                // Perform boss's attack logic here
+                // For example, dealing damage to the player or triggering attack animations
+
+                // Set the IsAttacking parameter in the Animator Controller to trigger attack animation
+                animator.SetBool("IsAttacking", true);
+
+                // Animation Event will handle dealing damage
+            }
+            else
+            {
+                // Player is not in the line of sight, so do not attack
+                animator.SetBool("IsAttacking", false);
+            }
+        }
+
+        // Alternatively, you can modify the conditions as needed based on your game's requirements
     }
+
 
     // Animation Event method for dealing damage
     void DealDamage()
     {
-        // Deal damage to the player
-        int damage = 50;
-        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
+        // Check if the player is still in attack range
+        if (IsPlayerInRange())
         {
-            playerHealth.TakeDamage(damage);
+            // Deal damage to the player
+            int damage = 50;
+            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(damage);
+            }
         }
     }
+
+    bool IsPlayerInRange()
+    {
+        Vector3 directionToPlayer = player.position - transform.position;
+        return directionToPlayer.magnitude <= attackRange;
+    }
+
 
     public void TakeDamage(int damage)
     {
