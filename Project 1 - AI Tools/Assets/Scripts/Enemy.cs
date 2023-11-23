@@ -25,6 +25,11 @@ public class Enemy : MonoBehaviour
 
     public AttackPhase currentPhase = AttackPhase.Phase1;
 
+    // Damage values for each phase
+    public int damagePhase1 = 50;
+    public int damagePhase2 = 75;
+    public int damagePhase3 = 100;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -88,7 +93,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-
     void MoveTowardsPlayer(Vector3 directionToPlayer)
     {
         transform.Translate(directionToPlayer.normalized * movementSpeed * Time.deltaTime, Space.World);
@@ -144,18 +148,41 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    // Animation Event method for dealing damage
     void DealDamage()
     {
+        // Check if the player is still in attack range
         if (IsPlayerInRange())
         {
-            int damage = 50;
+            int damage = GetDamageForCurrentPhase();
             PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
+                Debug.Log(damage);
                 playerHealth.TakeDamage(damage);
             }
         }
     }
+
+    int GetDamageForCurrentPhase()
+    {
+        // Modify this method to return different damage amounts based on the current phase
+        switch (currentPhase)
+        {
+            case AttackPhase.Phase1:
+                return damagePhase1;  // Adjust the damage amount for Phase 1
+
+            case AttackPhase.Phase2:
+                return damagePhase2;  // Adjust the damage amount for Phase 2
+
+            case AttackPhase.Phase3:
+                return damagePhase3;  // Adjust the damage amount for Phase 3
+
+            default:
+                return 0;
+        }
+    }
+
 
     bool IsPlayerInRange()
     {
@@ -183,7 +210,6 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
-
     void Die()
     {
         // Add logic for boss death behavior (e.g., play death animation, drop items, etc.)
