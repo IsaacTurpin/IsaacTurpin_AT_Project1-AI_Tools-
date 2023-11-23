@@ -98,8 +98,13 @@ public class Enemy : MonoBehaviour
         transform.Translate(directionToPlayer.normalized * movementSpeed * Time.deltaTime, Space.World);
         transform.LookAt(player);
         animator.SetBool("IsMoving", true);
-        animator.SetBool("IsAttacking", false);
+
+        // Reset attack triggers
+        animator.ResetTrigger("AttackPhase1");
+        animator.ResetTrigger("AttackPhase2");
+        animator.ResetTrigger("AttackPhase3");
     }
+
 
     void StopMoving()
     {
@@ -110,13 +115,11 @@ public class Enemy : MonoBehaviour
     {
         if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
         {
-            Debug.Log("phase 1");
-            // Attack logic for phase 1
-            animator.SetBool("IsAttacking", true);
+            animator.SetTrigger("AttackPhase1");
         }
         else
         {
-            animator.SetBool("IsAttacking", false);
+            animator.ResetTrigger("AttackPhase1");  // Reset the trigger if not attacking
         }
     }
 
@@ -124,13 +127,11 @@ public class Enemy : MonoBehaviour
     {
         if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
         {
-            Debug.Log("phase 2");
-            // Attack logic for phase 2
-            animator.SetBool("IsAttacking", true);
+            animator.SetTrigger("AttackPhase2");
         }
         else
         {
-            animator.SetBool("IsAttacking", false);
+            animator.ResetTrigger("AttackPhase2");  // Reset the trigger if not attacking
         }
     }
 
@@ -138,15 +139,14 @@ public class Enemy : MonoBehaviour
     {
         if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
         {
-            Debug.Log("phase 3");
-            // Attack logic for phase 3
-            animator.SetBool("IsAttacking", true);
+            animator.SetTrigger("AttackPhase3");
         }
         else
         {
-            animator.SetBool("IsAttacking", false);
+            animator.ResetTrigger("AttackPhase3");  // Reset the trigger if not attacking
         }
     }
+
 
     // Animation Event method for dealing damage
     void DealDamage()
