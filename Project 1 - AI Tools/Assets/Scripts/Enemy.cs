@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             Vector3 directionToPlayer = player.position - transform.position;
-
+            
             if (directionToPlayer.magnitude > attackRange)
             {
                 MoveTowardsPlayer(directionToPlayer);
@@ -158,7 +158,7 @@ public class Enemy : MonoBehaviour
             PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                Debug.Log(damage);
+                //Debug.Log(damage);
                 playerHealth.TakeDamage(damage);
             }
         }
