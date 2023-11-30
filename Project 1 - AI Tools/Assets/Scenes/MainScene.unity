@@ -864,6 +864,10 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 400
       objectReference: {fileID: 0}
+    - target: {fileID: 3849280440598185866, guid: d2b5bcd5f31056f41af1b782747ef0d6, type: 3}
+      propertyPath: deathParticlePrefab
+      value: 
+      objectReference: {fileID: 1000011128802252, guid: 96730f8640590934eacb6f860058e7f9, type: 3}
     - target: {fileID: 4582882329304561677, guid: d2b5bcd5f31056f41af1b782747ef0d6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

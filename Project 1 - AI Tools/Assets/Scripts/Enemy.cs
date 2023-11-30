@@ -16,6 +16,9 @@ public class Enemy : MonoBehaviour
     private Transform player;
     public Slider healthBarSlider;
 
+    private bool hasDied = false;
+    public GameObject deathParticlePrefab; // Reference to the particle effect prefab
+
     public enum AttackPhase
     {
         Phase1,
@@ -212,9 +215,37 @@ public class Enemy : MonoBehaviour
     }
     void Die()
     {
+        // Check if the enemy has already died to avoid multiple calls
+        if (hasDied)
+        {
+            return;
+        }
+
         // Add logic for boss death behavior (e.g., play death animation, drop items, etc.)
+
+        // Play the death animation
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
+
+        // Set a flag to avoid multiple calls
+        hasDied = true;
+    }
+
+    // Called by an Animation Event when the death animation is complete
+    void DieAnimationFinished()
+    {
+        // Spawn the death particle effect
+        if (deathParticlePrefab != null)
+        {
+            Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
+        }
+
+        // Destroy the GameObject
         Destroy(gameObject);
     }
+
 
     void UpdateHealthBar()
     {
