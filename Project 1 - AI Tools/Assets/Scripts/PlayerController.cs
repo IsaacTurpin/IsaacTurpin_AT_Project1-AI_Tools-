@@ -8,10 +8,25 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 2f;  // Walk speed of the player
     public float runSpeed = 5f;   // Run speed of the player
     public int attackDamage = 20; // Damage amount for each attack
+    public AudioClip swordSwingSoundClip;
+    public AudioClip swordHitSoundClip;
+
+    private AudioSource audioSource;
+
 
     void Start()
     {
         animator = GetComponent<Animator>();
+        // Get the AudioSource component attached to the same GameObject
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            // If AudioSource is not found, add it to the GameObject
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Set the default clip for the AudioSource
+        audioSource.clip = swordSwingSoundClip;
     }
 
     void Update()
@@ -46,6 +61,7 @@ public class PlayerController : MonoBehaviour
         {
             // Trigger the attack animation
             animator.SetTrigger("AttackTrigger");
+            PlaySwordSwingSound();
         }
 
         // Reset the attack trigger to prevent continuous attacks
@@ -82,6 +98,8 @@ public class PlayerController : MonoBehaviour
             Enemy enemy = hit.transform.GetComponent<Enemy>();
             if (enemy != null)
             {
+                // Play the sword hit sound when dealing damage
+                PlaySwordHitSound();
                 // Deal damage to the enemy
                 enemy.TakeDamage(attackDamage);
             }
@@ -92,6 +110,20 @@ public class PlayerController : MonoBehaviour
     {
         // This method will be called from the animation event
         DealDamage();
+    }
+
+    void PlaySwordSwingSound()
+    {
+        // Play the sword swing sound
+        audioSource.clip = swordSwingSoundClip;
+        audioSource.Play();
+    }
+
+    void PlaySwordHitSound()
+    {
+        // Play the sword hit sound
+        audioSource.clip = swordHitSoundClip;
+        audioSource.Play();
     }
 }
 
