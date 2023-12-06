@@ -19,6 +19,14 @@ public class Enemy : MonoBehaviour
     private bool hasDied = false;
     public GameObject deathParticlePrefab; // Reference to the particle effect prefab
 
+    public AudioClip attackPhase1SoundClip;
+    public AudioClip attackPhase2SoundClip;
+    public AudioClip attackPhase3SoundClip;
+    public AudioClip deathSoundClip;  // Add a new public variable for the death sound clip
+
+    private AudioSource audioSource;
+
+
     public enum AttackPhase
     {
         Phase1,
@@ -41,6 +49,12 @@ public class Enemy : MonoBehaviour
         if (healthBarSlider == null)
         {
             Debug.LogError("Health bar slider is not assigned in the inspector.");
+        }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
@@ -143,6 +157,7 @@ public class Enemy : MonoBehaviour
         if (IsPlayerInRange() && !IsObstacleBetweenPlayer())
         {
             animator.SetTrigger("AttackPhase3");
+
         }
         else
         {
@@ -150,6 +165,33 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void PlayAttackSound(AudioClip soundClip)
+    {
+        if (soundClip != null)
+        {
+            audioSource.clip = soundClip;
+            audioSource.Play();
+        }
+    }
+
+    AudioClip GetAttackSoundForCurrentPhase()
+    {
+        // Return the appropriate sound clip based on the current phase
+        switch (currentPhase)
+        {
+            case AttackPhase.Phase1:
+                return attackPhase1SoundClip;
+
+            case AttackPhase.Phase2:
+                return attackPhase2SoundClip;
+
+            case AttackPhase.Phase3:
+                return attackPhase3SoundClip;
+
+            default:
+                return null;
+        }
+    }
 
     // Animation Event method for dealing damage
     void DealDamage()
@@ -161,6 +203,9 @@ public class Enemy : MonoBehaviour
             PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
+                // Play the corresponding attack sound effect
+                PlayAttackSound(GetAttackSoundForCurrentPhase());
+
                 //Debug.Log(damage);
                 playerHealth.TakeDamage(damage);
             }
@@ -229,6 +274,9 @@ public class Enemy : MonoBehaviour
             animator.SetTrigger("Die");
         }
 
+        // Play the death sound effect
+        PlayDeathSound();
+
         // Set a flag to avoid multiple calls
         hasDied = true;
     }
@@ -246,6 +294,14 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+    void PlayDeathSound()
+    {
+        // Play the death sound effect
+        if (deathSoundClip != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSoundClip, transform.position);
+        }
+    }
 
     void UpdateHealthBar()
     {
