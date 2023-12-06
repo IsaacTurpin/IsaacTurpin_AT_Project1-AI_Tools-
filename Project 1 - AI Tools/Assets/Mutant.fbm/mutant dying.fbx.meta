@@ -19,8 +19,8 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: Event NewEvent has a time (4.530723) outside the clip's
-      valid range (0.000000..3.433333). It will never be fired
+    animationImportWarnings: Event DieAnimationFinished has a time (4.530723) outside
+      the clip's valid range (0.000000..3.433333). It will never be fired
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -46,7 +46,7 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
-      loopBlend: 1
+      loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
